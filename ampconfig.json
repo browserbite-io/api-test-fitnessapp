@@ -1,0 +1,19 @@
+{
+  "dataServiceGeneratorVersion": "0.11.2",
+  "appInfo": {
+    "name": "Fitnesapp",
+    "description": "",
+    "version": "l16ljlsp",
+    "id": "ckzl53nlj22739701s6uwpmydxv",
+    "url": "https://app.amplication.com/ckzl53nlj22739701s6uwpmydxv",
+    "settings": {
+      "dbHost": "localhost",
+      "dbName": "fitnessapp",
+      "dbPassword": "admin",
+      "dbPort": 5432,
+      "dbUser": "admin",
+      "appId": "ckzl53nlj22739701s6uwpmydxv",
+      "authProvider": "Jwt"
+    }
+  }
+}

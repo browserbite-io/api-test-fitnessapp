@@ -1,0 +1,186 @@
+datasource postgres {
+  provider = "postgresql"
+  url      = env("POSTGRESQL_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  armSize    Float?
+  bodytype   EnumUserBodytype?
+  chestSize  Float?
+  createdAt  DateTime          @default(now())
+  firstName  String?
+  gender     EnumUserGender?
+  goal       Goal?             @relation(fields: [goalId], references: [id])
+  goalId     String?
+  hipSize    Float?
+  id         String            @id @default(cuid())
+  lastName   String?
+  legSize    Float?
+  location   Location?         @relation(fields: [locationId], references: [id])
+  locationId String?
+  password   String
+  roles      String[]
+  startDate  DateTime?
+  updatedAt  DateTime          @updatedAt
+  username   String            @unique
+}
+
+model Goal {
+  createdAt      DateTime        @default(now())
+  id             String          @id @default(cuid())
+  name           String?
+  notifications  Notification[]
+  nutritionPlans NutritionPlan[]
+  updatedAt      DateTime        @updatedAt
+  users          User[]
+  workoutPlans   WorkoutPlan[]
+}
+
+model Location {
+  createdAt     DateTime       @default(now())
+  id            String         @id @default(cuid())
+  name          String         @unique
+  notifications Notification[]
+  updatedAt     DateTime       @updatedAt
+  users         User[]
+  workoutPlans  WorkoutPlan[]
+}
+
+model WorkoutPlan {
+  createdAt   DateTime     @default(now())
+  description String?
+  goal        Goal?        @relation(fields: [goalId], references: [id])
+  goalId      String?
+  id          String       @id @default(cuid())
+  image       String?
+  location    Location?    @relation(fields: [locationId], references: [id])
+  locationId  String?
+  name        String?
+  tips        Tip[]
+  updatedAt   DateTime     @updatedAt
+  video       String?
+  workoutDays WorkoutDay[]
+}
+
+model WorkoutDay {
+  createdAt     DateTime     @default(now())
+  day           String?
+  description   String?
+  exercises     Exercise[]
+  id            String       @id @default(cuid())
+  updatedAt     DateTime     @updatedAt
+  workoutPlan   WorkoutPlan? @relation(fields: [workoutPlanId], references: [id])
+  workoutPlanId String?
+}
+
+model Exercise {
+  additionalInformation String?
+  createdAt             DateTime                  @default(now())
+  description           String?
+  duration              Int?
+  exerciseType          EnumExerciseExerciseType?
+  id                    String                    @id @default(cuid())
+  image                 String?
+  name                  String?
+  repetitions           Int?
+  sets                  Int?
+  updatedAt             DateTime                  @updatedAt
+  video                 String?
+  workoutDay            WorkoutDay?               @relation(fields: [workoutDayId], references: [id])
+  workoutDayId          String?
+}
+
+model NutritionPlan {
+  createdAt    DateTime @default(now())
+  description  String?
+  goal         Goal?    @relation(fields: [goalId], references: [id])
+  goalId       String?
+  id           String   @id @default(cuid())
+  image        String?
+  name         String?
+  shoppingList String?
+  tips         Tip[]
+  updatedAt    DateTime @updatedAt
+  video        String?
+}
+
+model Tip {
+  createdAt       DateTime       @default(now())
+  description     String?
+  id              String         @id @default(cuid())
+  image           String?
+  name            String?
+  nutritionPlan   NutritionPlan? @relation(fields: [nutritionPlanId], references: [id])
+  nutritionPlanId String?
+  updatedAt       DateTime       @updatedAt
+  video           String?
+  workoutPlan     WorkoutPlan?   @relation(fields: [workoutPlanId], references: [id])
+  workoutPlanId   String?
+}
+
+model NutritionPhase {
+  createdAt   DateTime @default(now())
+  description String?
+  fromDay     Int?
+  id          String   @id @default(cuid())
+  name        String?
+  recipes     Recipe[]
+  tillDay     Int?
+  updatedAt   DateTime @updatedAt
+}
+
+model Recipe {
+  createdAt       DateTime         @default(now())
+  description     String?
+  id              String           @id @default(cuid())
+  image           String?
+  meal            EnumRecipeMeal?
+  name            String?
+  nutritionPhases NutritionPhase[]
+  updatedAt       DateTime         @updatedAt
+  video           String?
+}
+
+model Notification {
+  createdAt   DateTime                     @default(now())
+  day         Int?
+  destination EnumNotificationDestination?
+  goal        Goal?                        @relation(fields: [goalId], references: [id])
+  goalId      String?
+  id          String                       @id @default(cuid())
+  location    Location?                    @relation(fields: [locationId], references: [id])
+  locationId  String?
+  text        String?
+  updatedAt   DateTime                     @updatedAt
+}
+
+enum EnumUserBodytype {
+  ectomorph
+  mesomorph
+  endomorph
+}
+
+enum EnumUserGender {
+  male
+  Female
+}
+
+enum EnumExerciseExerciseType {
+  TIME
+  SET
+}
+
+enum EnumRecipeMeal {
+  Breakfast
+  Lunch
+  Dinner
+}
+
+enum EnumNotificationDestination {
+  NUTRITIONPLAN
+  WORKOUTPLAN
+}
